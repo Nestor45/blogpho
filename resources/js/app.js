@@ -11,6 +11,7 @@ import 'vuetify/dist/vuetify.min.css';
 import {routes} from './routes';
 import StoreData from './store';
 import MainApp from './components/MainApp.vue';
+import {initialize} from './helpers/general';
 
 Vue.use(VueRouter);
 Vue.use(Vuex);
@@ -24,25 +25,12 @@ const router = new VueRouter({
     routes,
     mode: 'history'
 })
-
+initialize(store, router);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-// router.beforeEach((to, from, next) => {
-//     const requireAuth = to.matched.some(record => record.meta.requireAuth)
-//     const currentUser = store.state.currentUser
-
-//     if(requireAuth && !!currentUser) {
-//         next('/login')
-//     } else if(to.path == '/login' && currentUser){
-//         next('/')
-//     }else {
-//         next()
-//     }
-// })
 const app = new Vue({
     el: '#app',
     router,
