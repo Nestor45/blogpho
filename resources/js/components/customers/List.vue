@@ -31,12 +31,12 @@
                     >
                     mdi-pencil
                     </v-icon>
-                    <!-- <v-icon
+                    <v-icon
                     small
-                    @click="deleteItem(item)"
+                    @click="deleteCustomer(item)"
                     >
                     mdi-delete
-                    </v-icon> -->
+                    </v-icon>
                 </template>
                 <v-toolbar-title>My CRUD</v-toolbar-title>
             </v-data-table>
@@ -96,6 +96,21 @@
             },
             newCostomer() {
                 this.$router.push('/customers/new')
+            },
+            async deleteCustomer(item) {
+                console.log(item.customer_id)
+                alert("eliminar customer, Esc para CANCELAR")
+                try {
+                    let response = await axios.post('/api/customers/delete',item)
+                    if (response.status === 200) {
+                        this.getAllCostomers()
+                        console.log("eliminacion con exito")
+                    } else {
+                        console.log("algo salio mal al eliminar")
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
             }
         }
     }

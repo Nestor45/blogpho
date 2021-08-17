@@ -75,16 +75,16 @@
                                 <v-container>
                                     <v-row>
                                         <v-col cols="12"  md="11">
-                                            <v-text-field v-model="editCustomer.name" label="Name" prepend-icon="mdi-account-alert">{{editCustomer.name}}</v-text-field>
+                                            <v-text-field v-model="editCustomer.name" label="Name" :rules="nameRules" prepend-icon="mdi-account-alert">{{editCustomer.name}}</v-text-field>
                                         </v-col>
                                         <v-col cols="12"  md="11">
-                                            <v-text-field v-model="editCustomer.phone" label="Phone" prepend-icon="mdi-phone">{{editCustomer.phone}}</v-text-field>
+                                            <v-text-field v-model="editCustomer.phone" label="Phone" :counter="10" :rules="nameRules" prepend-icon="mdi-phone">{{editCustomer.phone}}</v-text-field>
                                         </v-col>
                                         <v-col cols="12"  md="11">
-                                            <v-text-field v-model="editCustomer.email" label="Email" prepend-icon="mdi-email">{{editCustomer.email}}</v-text-field>
+                                            <v-text-field v-model="editCustomer.email" label="Email" :rules="emailRules"  prepend-icon="mdi-email">{{editCustomer.email}}</v-text-field>
                                         </v-col>
                                         <v-col cols="12"  md="11">
-                                            <v-text-field v-model="editCustomer.website" label="Website" prepend-icon="mdi-web">{{editCustomer.website}}</v-text-field>
+                                            <v-text-field v-model="editCustomer.website" label="Website" :rules="websiteRules" prepend-icon="mdi-web">{{editCustomer.website}}</v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -118,6 +118,7 @@ export default {
     name: 'view-customer',
     data() {
         return {
+            valid: true,
             dialog: false,
             editCustomer: {
                 id_customer: '',
@@ -125,7 +126,20 @@ export default {
                 phone: '',
                 email: '',
                 website: ''
-            }
+            },
+            nameRules: [
+                v => !!v || 'Name is required',
+            ],
+            phoneRules: [
+                v => !!v || 'Phone is required',
+            ],
+            emailRules: [
+                v => !!v || 'Email is required',
+                v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+            ],
+            websiteRules: [
+                v => !!v || 'Website is required',
+            ]
         }
     },
     created(){
@@ -148,9 +162,20 @@ export default {
         close() {
             this.dialog = false
         },
-        save() {
+        async save() {
             console.log(this.editCustomer)
-            this.close()
+            try {
+                let response = await axios.post('/api/customers/edit', this.editCustomer)
+                if (response.status === 200) {
+                    this.$store.commit('setCustomer',this.editCustomer)
+                    this.close()
+                } else {
+                    alert("algo esta mal al editar")
+                }
+            } catch (error) {
+                console.log(error)
+            } 
+            
         }
     }
     
