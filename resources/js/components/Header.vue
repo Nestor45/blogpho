@@ -1,7 +1,8 @@
 <template>
+<div></div>
     <!-- <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
         <div class="container"> -->
-            <v-card >
+            <!-- <v-card >
                 <v-toolbar
                     color="#0D3E67"
                     dark
@@ -68,7 +69,7 @@
                         </v-tabs>
                     </template>
                 </v-toolbar>
-            </v-card>
+            </v-card> -->
         <!-- </div>
     </nav> -->
 </template>

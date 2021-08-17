@@ -30,6 +30,19 @@ const router = new VueRouter({
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+// router.beforeEach((to, from, next) => {
+//     const requireAuth = to.matched.some(record => record.meta.requireAuth)
+//     const currentUser = store.state.currentUser
+
+//     if(requireAuth && !!currentUser) {
+//         next('/login')
+//     } else if(to.path == '/login' && currentUser){
+//         next('/')
+//     }else {
+//         next()
+//     }
+// })
 const app = new Vue({
     el: '#app',
     router,
