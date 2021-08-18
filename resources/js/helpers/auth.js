@@ -21,3 +21,8 @@ export function getLocalUser() {
     }
     return JSON.parse(userStr)
 }
+
+export function logout() {
+    localStorage.removeItem('token')
+    localStorage.removeItem('expiration')
+}
