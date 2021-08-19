@@ -55,12 +55,9 @@
                         </v-btn>
                     </v-form>
                 </v-card-text>
-                
             </v-card>
         </div>
     </div>
-    
-    
 </template>
 <script>
 export default {

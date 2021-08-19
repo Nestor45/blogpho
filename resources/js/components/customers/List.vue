@@ -1,8 +1,6 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            
-        
             <v-data-table
                 :headers="headers"
                 :items="customers"

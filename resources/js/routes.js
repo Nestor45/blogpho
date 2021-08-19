@@ -5,10 +5,15 @@ import CustomersMain from './components/customers/Main.vue'
 import CustomersList from './components/customers/List.vue'
 import CustomersNew from './components/customers/New.vue'
 import Customer from './components/customers/View.vue'
+import Register from './components/auth/Register.vue'
 export const routes = [
     {
         path: '/login',
         component: Login
+    },
+    {
+        path: '/register',
+        component: Register
     },
     {
         path: '/',

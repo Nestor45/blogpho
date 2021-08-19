@@ -26,7 +26,7 @@ Route::group(['prefix' => 'auth'], function ($router) {
 });
 
 
-
+Route::post('registerUser','Auth\RegisterController@store');
 
 
 Route::group(['middleware' => 'jwt.auth'], function ($router) {

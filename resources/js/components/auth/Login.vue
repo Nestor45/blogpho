@@ -35,7 +35,7 @@
                     :disabled="valid"
                     text
                     color="teal accent-4"
-                    @click="authenticate"
+                    @click="register"
                 >
                     Register
                 </v-btn>
@@ -52,7 +52,8 @@
                 valid: true,
                 form : {
                     email: '',
-                    password: ''
+                    password: '',
+                    band: false,
                 },
                 emailRules: [
                     v => !!v || 'E-mail is required',
@@ -64,17 +65,23 @@
                 error: null
             }
         },
+        
         methods : {
             authenticate() {
                 this.$store.dispatch('login')
                 login(this.form)
                     .then((res)=>{
+                        
                         this.$store.commit("loginSuccess",res)
                         this.$router.push({path: '/validar'})
+                        event.preventDefault()
                     })
                     .catch((error)=>{
                         this.$store.commit("loginFailed",{error})
                     })
+            },
+            register() {
+                this.$router.push({path: '/register'})
             }
         }
     }

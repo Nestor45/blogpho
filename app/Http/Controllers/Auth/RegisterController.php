@@ -8,7 +8,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 class RegisterController extends Controller
 {
     /*
@@ -64,10 +65,49 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        
         return User::create([
             'name' => $data['name'],
+            'lastname' => $data['lastname'],
+            'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+    public function store(Request $request) {
+        
+        $exito = false;
+        DB::beginTransaction();
+
+        try { 
+            $user = new User;
+            $user->name = $request->name;
+            $user->lastname = $request->lastname;
+            $user->username = $request->username;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+
+            $user->save();
+
+            DB::commit();
+            $exito = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $exito = false;
+            return response()->json([
+                "status" => "error",
+                "message" => "Error al guardar los datos",
+                "error" => $th
+            ], 500);
+        }
+
+        if ($exito) {
+            return response()->json([
+                "status" => "ok",
+                "message" => "Información guardada correctamente",
+                "User" => $user
+            ], 200);
+        }
     }
 }
