@@ -3,7 +3,7 @@
         <div class="row justify-content-center">
             <v-card
                 lass="mx-auto my-12"
-                max-width="450"
+                max-width="500"
             >
                 <v-card-text>
                     <v-list-item two-line>

@@ -10,7 +10,8 @@ export default {
         auth_error: null,
         customers: [],
         customer: [],
-        bandLogin: false
+        bandLogin: false,
+        questions: [],
     },
     getters: {
         isLoading(state){
@@ -33,6 +34,9 @@ export default {
         },
         bandLogin(state){
             return state.bandLogin
+        },
+        getQuestions(state){
+            return state.questions
         }
     },
     mutations: {
@@ -65,6 +69,9 @@ export default {
         },
         setBandLogin(state, payload){
             state.bandLogin = payload
+        },
+        setQuestions(state, payload){
+            state.questions = payload
         }
     },
     actions: {

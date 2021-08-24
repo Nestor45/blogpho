@@ -36,3 +36,9 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
     Route::post('customers/new', 'CustomerController@store');
     Route::post('customers/edit','CustomerController@editCustomer');
 });
+
+
+Route::group(['middleware' => 'jwt.auth'], function ($router) {
+    Route::post('post/create', 'PostController@create');
+    Route::get('questions', 'PostController@index');
+});

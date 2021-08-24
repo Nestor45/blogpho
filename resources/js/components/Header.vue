@@ -81,6 +81,11 @@ export default {
             if( !this.band ) {
                 this.band = true
             }
+            var URLactual = window.location;
+            console.log(URLactual.pathname)
+            if (URLactual.pathname === '/login') {
+                this.bandPre = false
+            }
         },
         customer() {
             console.log("click customer")
@@ -105,7 +110,6 @@ export default {
             }
             console.log("click home", this.bandPre)
             this.$router.push('/')
-            
         }
     },
     computed: {

@@ -1,56 +1,46 @@
 <template>
     <div class="container">
-        <v-card-text class="py-0">
+        <template v-if="there_is_questions">
             <v-timeline dense>
-            <v-slide-x-reverse-transition
-                group
-                hide-on-leave
-            >
-                <v-timeline-item
-                v-for="item in items"
-                :key="item.id"
-                :color="item.color"
-                small
-                fill-dot
+                <v-slide-x-reverse-transition
+                    group
+                    hide-on-leave
                 >
-                <template v-slot:icon>
-                    <v-avatar>
-                        <img src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light">
-                    </v-avatar>
-                </template>
-                <v-card
-                    :color="item.color"
-                    dark
-                >
-                    <v-card-text class="white text--primary">
-                        <p>¿Cuál es la noción jurídico substancial del delito?</p>
-                        <v-btn
-                            :color="item.color"
-                            class="mx-0"
-                            outlined
-                        >
-                            Publicar
-                        </v-btn>
-                        <v-btn
-                            :color="item.color"
-                            class="mx-0"
-                            outlined
-                        >
-                            Eliminar
-                        </v-btn>
-                    </v-card-text>
-                </v-card>
-                </v-timeline-item>
-            </v-slide-x-reverse-transition>
+                    <v-timeline-item
+                    v-for="(item, i) in questions"
+                    :key="i"
+                    fill-dot
+                    icon="mdi-account"
+                    >
+                            <v-card shaped :style="styleObject2" >
+                                <span class="color_span"></span>{{item.title}} <br>
+                                <span class="color_span">AUTOR: </span>{{item.user_name}}
+                            </v-card>
+                            <v-card-actions>
+                                <v-btn
+                                    color="#6cb2eb"
+                                    class="mx-4"
+                                    outlined
+                                >
+                                    Publicar
+                                </v-btn>
+                                <v-btn
+                                    color="#6cb2eb"
+                                    class="mx-4"
+                                    outlined
+                                >
+                                    Eliminar
+                                </v-btn>
+                            </v-card-actions>
+                    </v-timeline-item>
+                </v-slide-x-reverse-transition>
             </v-timeline>
-        </v-card-text>
+        </template>
     </div>
 </template>
 <script>
 export default {
-    
     name: 'validar',
-
     data() {
         const COLORS = [
             'info',
@@ -65,13 +55,32 @@ export default {
             success: 'mdi-check-circle',
         }
         return {
-            items: [
-                {
-                    id: 1,
-                    color: 'info',
-                    icon: ICONS.info,
-                },
-            ],
+            isLoading: true,
+            there_is_questions: false,
+            questions: [],
+            styleObject2: {
+                border: '3px solid #AED6F1'
+            }
+        }
+    },
+    created(){
+        this.questionsAll()
+    },
+    methods: {
+        async questionsAll(){
+            try {
+                let response = await axios.get('/api/questions')
+                this.questions = response.data.questions
+                if (this.questions.length === 0) {
+                    console.log("no hay preguntas")
+                } else {
+                    this.there_is_questions = true
+                    this.$store.commit('setQuestions', response.data.questions)
+                    console.log(response.data.questions)
+                }
+            } catch (error) {
+                console.log(error)
+            }
         }
     }
 }
