@@ -124,9 +124,6 @@ class CustomerController extends Controller
     public function delete(Request $request) {
         $exito = false;
         DB::beginTransaction();
-        // return response()->json([
-        //     "request" => $request->customer_id
-        // ]);
         try {
             $customer = Customer::find($request->customer_id);
             $customer->delete();

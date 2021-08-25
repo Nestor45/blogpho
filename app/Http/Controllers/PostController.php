@@ -17,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {   
-        $questions = Post::where('status', 1)->get();
+        $questions = Post::where('status', 1)->get(); //ESTADO SIN RESPONDER Y NO ESTA ALIMINADA
 
         $array = array();
         foreach($questions as $question) {
@@ -66,7 +66,6 @@ class PostController extends Controller
             $exito = true;
 
         } catch (\Throwable $th) {
-
             DB::rollback();
             $exito = false;
         }
@@ -119,25 +118,70 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Se agrega la respuesta a la pregunta, actulizando el atributo context
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $exito = false;
+        DB::beginTransaction();
+
+        try {
+            $post = Post::find($request->id_question);
+            $post->context = $request->response_ques;
+            $post->status = 0; //ESTADO CONTESTADA LA RESPUESTA
+            $post->save();
+            DB::commit();
+            $exito = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $exito = false;
+            return response()->json([
+                "status" => "error",
+                "message" => "Error al actulizar la respuesta los datos",
+                "error" => $th
+            ], 500);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Cambiamos el estado para que asi no pueda ser vista
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroyStatus(Request  $request)
     {
-        //
+        $exito = false;
+        DB::beginTransaction();
+        // return response()->json([
+        //     "request" => $request->id_question
+        // ]);
+        try {
+            $post = Post::find($request->id_question);
+            $post->status = 2; //ESTADO ALIMINADA LA RESPUESTA
+            $post->save();
+
+            DB::commit();
+            $exito = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $exito = false;
+            return response()->json([
+                "status" => "error",
+                "message" => "Error al eliminar los datos",
+                "error" => $th
+            ], 500);
+        }
+
+        if ($exito) {
+            return response()->json([
+                "status" => "ok",
+                "message" => "Pregunta eliminada correctamente",
+                "question" => $post
+            ], 200);
+        }
     }
 }
