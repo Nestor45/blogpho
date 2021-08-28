@@ -42,5 +42,12 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
     Route::post('post/create', 'PostController@create');
     Route::get('questions', 'PostController@index');
     Route::post('post/delete', 'PostController@destroyStatus');
-    Route::post('post/respuesta', 'PostController@update');
 });
+
+Route::get('questions/respuesta', 'PostController@indexHome');
+
+Route::group(['middleware' => 'jwt.auth'], function ($router) {
+    Route::post('post/respuesta', 'CommentController@CommentPost');
+});
+
+Route::post('user/answared', 'UserController@postAnswared');

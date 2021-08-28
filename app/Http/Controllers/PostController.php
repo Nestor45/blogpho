@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 
 use App\Models\Post;
+use App\Models\Comment;
 
 class PostController extends Controller
 {
@@ -125,25 +126,7 @@ class PostController extends Controller
      */
     public function update(Request $request)
     {
-        $exito = false;
-        DB::beginTransaction();
-
-        try {
-            $post = Post::find($request->id_question);
-            $post->context = $request->response_ques;
-            $post->status = 0; //ESTADO CONTESTADA LA RESPUESTA
-            $post->save();
-            DB::commit();
-            $exito = true;
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            $exito = false;
-            return response()->json([
-                "status" => "error",
-                "message" => "Error al actulizar la respuesta los datos",
-                "error" => $th
-            ], 500);
-        }
+        //
     }
 
     /**
@@ -182,6 +165,30 @@ class PostController extends Controller
                 "message" => "Pregunta eliminada correctamente",
                 "question" => $post
             ], 200);
+        }
+    }
+
+    public function indexHome(){ 
+        $comments = Comment::all();
+        $array = array();
+        foreach($comments as $comment) {
+            $post = $comment->post;
+            $user = User::whereId($post->user_id)->first();
+            $objectQuestion = new \stdClass();
+            $objectQuestion->id_question = $comment->id;
+            $objectQuestion->title = $post->title;
+            $objectQuestion->context = $comment->comment;
+            $objectQuestion->user_name = $user->name;
+            array_push($array, $objectQuestion);
+        }
+        if ($array) {
+            return response()->json([
+                "questionsRes" => $array
+            ], 200);
+        } else {
+            return response()->json([
+                "error" => "No hay nada en la BD"
+            ], 250);
         }
     }
 }

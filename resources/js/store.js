@@ -12,6 +12,7 @@ export default {
         customer: [],
         bandLogin: false,
         questions: [],
+        questionsRes: [],
     },
     getters: {
         isLoading(state){
@@ -37,6 +38,9 @@ export default {
         },
         getQuestions(state){
             return state.questions
+        },
+        getQuestionsRes(state){
+            return state.questionsRes
         }
     },
     mutations: {
@@ -72,6 +76,9 @@ export default {
         },
         setQuestions(state, payload){
             state.questions = payload
+        },
+        setQuestionsRes(state, payload){
+            state.questionsRes = payload
         }
     },
     actions: {

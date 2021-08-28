@@ -64,7 +64,18 @@
                     </v-timeline-item>
                 </v-slide-x-reverse-transition>
             </v-timeline>
-            
+        </template>
+        <template v-else>
+            <v-card
+                class="mx-auto"
+                max-width="444"
+            >
+                <v-card-text>
+                    <p class="text-h4 text--primary">
+                        No hay publicaciones 
+                    </p>
+                </v-card-text>
+            </v-card>
         </template>
     </div>
 </template>
@@ -92,6 +103,7 @@ export default {
             questionResp: {
                 response_ques: '',
                 id_question: '',
+                id_user: '',
             },
             styleObject2: {
                 border: '3px solid #AED6F1'
@@ -100,18 +112,22 @@ export default {
     },
     created(){
         this.questionsAll()
+        this.infoUser()
     },
     methods: {
+        infoUser(){
+            let $user = this.$store.getters.currentUser
+            this.questionResp.id_user = $user.id 
+        },
         async questionsAll(){
             try {
                 let response = await axios.get('/api/questions')
                 this.questions = response.data.questions
-                if (this.questions.length === 0) {
-                    console.log("no hay preguntas")
+                if (response.data.error === "No hay nada en la BD") {
+                    this.there_is_questions = false
                 } else {
                     this.there_is_questions = true
                     this.$store.commit('setQuestions', response.data.questions)
-                    console.log(response.data.questions)
                 }
             } catch (error) {
                 console.log(error)
@@ -135,8 +151,9 @@ export default {
             try {
                 let response = await axios.post('/api/post/respuesta',this.questionResp)
                 if (response.status === 200) {
-                    this.questionsAll()
+                    // this.questionsAll()
                     this.dialog = false
+                    this.$router.push('/')
                 } else {
                     console.log("algo salio mal al responder la pregunta")
                 }
