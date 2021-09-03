@@ -42,7 +42,12 @@ Route::group(['middleware' => 'jwt.auth'], function ($router) {
     Route::post('post/create', 'PostController@create');
     Route::get('questions', 'PostController@index');
     Route::post('post/delete', 'PostController@destroyStatus');
+    
+
 });
+Route::post('post/like', 'PostController@likes');
+Route::post('post/dislike', 'PostController@dislikes');
+
 
 Route::get('questions/respuesta', 'PostController@indexHome');
 

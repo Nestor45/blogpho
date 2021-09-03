@@ -36,10 +36,15 @@
                             <v-row
                                 align="center"
                                 justify="end"
-                            >
-                                <v-icon class="mr-1">
-                                    mdi-heart
-                                </v-icon>
+                            >   
+                                <v-btn
+                                    @click="like(item), show2 = !show2"
+                                    fab
+                                    icon
+                                >  
+                                    <v-icon v-if="show2" >mdi-heart-outline</v-icon>
+                                    <v-icon v-else >mdi-heart</v-icon>
+                                </v-btn>
                                 <span class="subheading mr-2">{{item.likes}}</span>
                             </v-row>
                         </v-list-item>
@@ -66,7 +71,14 @@ export default {
     name: 'home',
     data() {
         return {
+            show2: true,
             there_is_questions: false,
+            likeEn: {
+                user_log_id: '',
+                post_id: 0,
+                type_like : '',
+            },
+            
             questions: [],
         }
     },
@@ -74,6 +86,9 @@ export default {
         this.questionsContestadas()
     },
     methods: {
+        love(){
+            console.log("show2",this.show2)
+        },
         async questionsContestadas(){
             try {
                 let response = await axios.get('/api/questions/respuesta')
@@ -85,10 +100,47 @@ export default {
                 } else {
                     this.there_is_questions = true
                     this.$store.commit('setQuestionsRes', this.questions)
-                    console.log("",this.questions)
                 }
             } catch (error) {
                 console.log(error)
+            }
+        },
+        async like(item){
+            try {
+                if (this.show2) {
+                    console.log("show true",this.show2)
+                    let user = this.$store.getters.currentUser
+                    this.likeEn.user_log_id = user.id
+                    this.likeEn.post_id = item.post_id
+                    this.likeEn.type_like = 1
+                    console.log(this.likeEn)
+
+                    let response = await axios.post('/api/post/like',this.likeEn)
+                    if (response.status === 200) {
+                        this.questionsContestadas()
+                        console.log("like")
+                    } else {
+                        console.log("Error")
+                    }
+                }else {
+                    console.log("show false",this.show2)
+                    let user = this.$store.getters.currentUser
+                    this.likeEn.user_log_id = user.id
+                    this.likeEn.post_id = item.post_id
+                    console.log(this.likeEn)
+
+                    let response = await axios.post('/api/post/dislike',this.likeEn)
+                    if (response.status === 200) {
+                        this.questionsContestadas()
+                        console.log("dislike")
+                    } else {
+                        console.log("Error")
+                    }
+                }
+                
+            } catch (error) {
+                console.log(error)
+                this.$router.push({path: '/login'})
             }
         }
     }

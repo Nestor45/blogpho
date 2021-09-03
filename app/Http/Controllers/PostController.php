@@ -177,6 +177,8 @@ class PostController extends Controller
             $objectQuestion->title = $post->title;
             $objectQuestion->context = $comment->comment;
             $objectQuestion->user_name = $user->name;
+            $objectQuestion->user_id = $user->id;
+            $objectQuestion->post_id = $post->id;
             $objectQuestion->likes = $likes;
             array_push($array, $objectQuestion);
         }
@@ -189,5 +191,60 @@ class PostController extends Controller
                 "error" => "No hay nada en la BD"
             ], 250);
         }
+    }
+
+    public function likes(Request $request) {
+        $exito = false;
+        DB::beginTransaction();
+        try {
+            $like = new Like;
+            $like->user_id = $request->user_log_id;
+            $like->post_id = $request->post_id;
+            $like->like = 1;
+            $like->save();
+            DB::commit();
+            $exito = true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $exito = false;
+            return response()->json([
+                "status" => "error",
+                "message" => "Error al dar like",
+                "error" => $th
+            ], 500);
+        }
+        if ($exito) {
+            return response()->json([
+                "message" => "Like con exito",
+                "question" => $like
+            ], 200);
+        }
+    }
+    public function dislikes(Request $request) {
+        $exito = false;
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::find($request->user_log_id);
+
+            $user->likes()->detach($request->id_post);
+
+            DB::commit();
+            $exito = true;
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $exito = false;
+            return response()->json([
+                "error" => $th
+            ], 500);
+        }
+
+        if ($exito) {
+            return response()->json([
+                "exito" => "dislike"
+            ], 200);
+        }
+
     }
 }
