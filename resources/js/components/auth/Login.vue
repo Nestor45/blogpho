@@ -18,9 +18,12 @@
                     prepend-icon="mdi-key"
                     name="password"
                     label="Password"
-                    type="password"
                     :rules="passwordRules"
                     v-model="form.password"
+                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="show1 = !show1"
+                    counter
+                    :type="show1 ? 'text' : 'password'"
                 ></v-text-field>
                 <v-spacer></v-spacer>
                 <v-btn
@@ -49,6 +52,7 @@
         name : 'loginView',
         data() {
             return {
+                show1: false,
                 valid: true,
                 form : {
                     email: '',

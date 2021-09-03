@@ -8,6 +8,7 @@ use App\Models\User;
 
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Like;
 
 class PostController extends Controller
 {
@@ -56,13 +57,9 @@ class PostController extends Controller
         try {
 
             $post = new Post;
-            $post->title = $request->title;
-            $post->brief = $request->brief;
-            $post->context = $request->context;
-            $post->image = $request->image;
-            $post->status = $request->status;
-            $post->user_id = $request->user_id;
-
+            $post->title = $request->pregunta;
+            $post->user_id = $request->id_user;
+            $post->save();
             DB::commit();
             $exito = true;
 
@@ -173,12 +170,14 @@ class PostController extends Controller
         $array = array();
         foreach($comments as $comment) {
             $post = $comment->post;
+            $likes = Like::where("post_id",$post->id)->count();
             $user = User::whereId($post->user_id)->first();
             $objectQuestion = new \stdClass();
             $objectQuestion->id_question = $comment->id;
             $objectQuestion->title = $post->title;
             $objectQuestion->context = $comment->comment;
             $objectQuestion->user_name = $user->name;
+            $objectQuestion->likes = $likes;
             array_push($array, $objectQuestion);
         }
         if ($array) {

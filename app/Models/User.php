@@ -51,7 +51,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function comments()  
     {
-        return $this->hasMany(Comment::class);
+        return $this->belongsToMany(Post::class, 'comments', 'user_id', 'post_id');
     }
 
     /**
@@ -72,5 +72,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function likes()
+    {
+        return $this->belongsToMany(Post::class, 'like_post_user', 'user_id', 'post_id');
     }
 }

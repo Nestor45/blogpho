@@ -6,6 +6,7 @@ import CustomersList from './components/customers/List.vue'
 import CustomersNew from './components/customers/New.vue'
 import Customer from './components/customers/View.vue'
 import Register from './components/auth/Register.vue'
+import CrearPregunta from './components/vistas_preguntas/NewQuestion.vue'
 export const routes = [
     {
         path: '/login',
@@ -46,6 +47,13 @@ export const routes = [
     {
         path: '/validar',
         component: Validar,
+        meta: {
+            requireAuth: true
+        }
+    },
+    {
+        path: '/preguntas',
+        component: CrearPregunta,
         meta: {
             requireAuth: true
         }
