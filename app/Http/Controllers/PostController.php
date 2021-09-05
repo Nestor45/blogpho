@@ -168,9 +168,20 @@ class PostController extends Controller
     public function indexHome(){ 
         $comments = Comment::all();
         $array = array();
+
+
         foreach($comments as $comment) {
+            $array_likes = array();
             $post = $comment->post;
-            $likes = Like::where("post_id",$post->id)->count();
+            $likes = Like::where("post_id",$post->id)->get();
+            foreach ($likes as $like){
+                $obLikes = new \stdClass();
+                $obLikes->user_id = $like->user_id;
+                $obLikes->post_id = $like->post_id;
+                $obLikes->type_like = $like->like;
+                array_push($array_likes, $obLikes);
+            }
+            $likesCount = Like::where("post_id",$post->id)->count();
             $user = User::whereId($post->user_id)->first();
             $objectQuestion = new \stdClass();
             $objectQuestion->id_question = $comment->id;
@@ -178,8 +189,10 @@ class PostController extends Controller
             $objectQuestion->context = $comment->comment;
             $objectQuestion->user_name = $user->name;
             $objectQuestion->user_id = $user->id;
+            
             $objectQuestion->post_id = $post->id;
-            $objectQuestion->likes = $likes;
+            $objectQuestion->likes = $likesCount;
+            $objectQuestion->obj_likes = $array_likes;
             array_push($array, $objectQuestion);
         }
         if ($array) {
@@ -197,6 +210,7 @@ class PostController extends Controller
         $exito = false;
         DB::beginTransaction();
         try {
+
             $like = new Like;
             $like->user_id = $request->user_log_id;
             $like->post_id = $request->post_id;
@@ -220,6 +234,8 @@ class PostController extends Controller
             ], 200);
         }
     }
+
+
     public function dislikes(Request $request) {
         $exito = false;
 
@@ -245,6 +261,5 @@ class PostController extends Controller
                 "exito" => "dislike"
             ], 200);
         }
-
     }
 }

@@ -13,6 +13,12 @@
                             </v-list-item-icon>
                             <v-list-item-title >Home</v-list-item-title>
                         </v-list-item>
+                        <v-list-item @click="pregunta">
+                            <v-list-item-icon>
+                                <v-icon>mdi-comment-text</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title >Hacer Pregunta</v-list-item-title>
+                        </v-list-item>
                         <v-list-item @click="customer">
                             <v-list-item-icon>
                                 <v-icon>mdi-account-multiple</v-icon>
@@ -64,9 +70,6 @@ export default {
         }
     },
     created() {
-        if (this.$store.state.currentUser){
-            console.log("dentor de created")
-        }
         this.infoUser()
     },
     computed: {
@@ -84,8 +87,11 @@ export default {
             var URLactual = window.location;
             console.log(URLactual.pathname)
             if (URLactual.pathname === '/login') {
+                console.log("detro del url")
                 this.bandPre = false
-            }
+            } if (URLactual.pathname === '/') {
+                this.bandPre = true
+            } 
         },
         customer() {
             console.log("click customer")
@@ -110,7 +116,12 @@ export default {
             }
             console.log("click home", this.bandPre)
             this.$router.push('/')
-        }
+        },
+        pregunta() {
+            this.bandPre = false
+            console.log("click preguntas", this.bandPre)
+            this.$router.push('/preguntas')
+        },
     },
     computed: {
 
