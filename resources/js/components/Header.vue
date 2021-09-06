@@ -19,6 +19,12 @@
                             </v-list-item-icon>
                             <v-list-item-title >Hacer Pregunta</v-list-item-title>
                         </v-list-item>
+                        <v-list-item @click="validar">
+                            <v-list-item-icon>
+                                <v-icon>mdi-bookmark-check </v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title >Validar</v-list-item-title>
+                        </v-list-item>
                         <v-list-item @click="customer">
                             <v-list-item-icon>
                                 <v-icon>mdi-account-multiple</v-icon>
@@ -121,6 +127,11 @@ export default {
             this.bandPre = false
             console.log("click preguntas", this.bandPre)
             this.$router.push('/preguntas')
+        },
+        validar() {
+            this.bandPre = false
+            console.log("click validar", this.bandPre)
+            this.$router.push('/validar')
         },
     },
     computed: {
