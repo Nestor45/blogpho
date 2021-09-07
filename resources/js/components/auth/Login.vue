@@ -43,6 +43,12 @@
                     Register
                 </v-btn>
             </v-form>
+            <template v-if="errorLogin"> 
+                <v-alert type="error">
+                    Verifique sus datos por favor <br>
+                    {{posError}}
+                </v-alert>
+            </template>
         </v-card-text>
     </v-card>
 </template>
@@ -54,6 +60,8 @@
             return {
                 show1: false,
                 valid: true,
+                errorLogin: false,
+                posError: '',
                 form : {
                     email: '',
                     password: '',
@@ -77,9 +85,10 @@
                     .then((res)=>{
                         this.$store.commit("loginSuccess",res)
                         this.$router.push({path: '/validar'})
-                        event.preventDefault()
                     })
                     .catch((error)=>{
+                        this.posError = error
+                        this.errorLogin = true
                         this.$store.commit("loginFailed",{error})
                     })
             },
