@@ -168,8 +168,6 @@ class PostController extends Controller
     public function indexHome(){ 
         $comments = Comment::all();
         $array = array();
-
-
         foreach($comments as $comment) {
             $array_likes = array();
             $post = $comment->post;
@@ -210,14 +208,24 @@ class PostController extends Controller
         $exito = false;
         DB::beginTransaction();
         try {
-
-            $like = new Like;
-            $like->user_id = $request->user_log_id;
-            $like->post_id = $request->post_id;
-            $like->like = 1;
-            $like->save();
-            DB::commit();
-            $exito = true;
+            //TODO: VALIDAMOS SI EXISTE UN REGISTRO DE LIKE DEL USUARIO EN EL MISMO POST
+            $likeExi = Like::where('user_id',$request->user_log_id)->where('post_id', $request->post_id)->exists();
+            if ($likeExi) {
+                return response()->json([
+                    "message" => "exite el registro",
+                    "existe" => $likeExi
+                ], 250);
+                //Si es asi entonces no haremos el like y devolvemos un 250
+            } else {
+                //En caso de que no exista el registro si se ahce el like
+                $like = new Like;
+                $like->user_id = $request->user_log_id;
+                $like->post_id = $request->post_id;
+                $like->like = 1;
+                $like->save();
+                DB::commit();
+                $exito = true;
+            }
         } catch (\Throwable $th) {
             DB::rollBack();
             $exito = false;
@@ -238,14 +246,10 @@ class PostController extends Controller
 
     public function dislikes(Request $request) {
         $exito = false;
-
         DB::beginTransaction();
-
         try {
-            $user = User::find($request->user_log_id);
-
-            $user->likes()->detach($request->id_post);
-
+            $post = Post::find($request->post_id);
+            $post->likes()->detach($request->user_log_id);
             DB::commit();
             $exito = true;
         } catch (\Throwable $th) {

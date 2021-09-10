@@ -1,6 +1,17 @@
 <template>
     <div class="container">
         <template v-if="there_is_questions">
+            <template v-if="error_id_user">
+                <v-alert
+                    text
+                    dense
+                    color="orange accent-2"
+                    icon="mdi-email-alert"
+                    border="left"
+                    >
+                    NO ES POSIBLE CONTESTAR SU MISMA PREGUNTA
+                </v-alert>
+            </template>
             <v-timeline dense>
                 <v-slide-x-reverse-transition
                     group
@@ -10,15 +21,16 @@
                     v-for="(item, i) in questions"
                     :key="i"
                     fill-dot
+                    color="#92C145"
                     icon="mdi-account"
                     >
-                            <v-card shaped :style="styleObject2" >
+                            <v-card shaped :style="styleObject2">
                                 <span class="color_span"></span>{{item.title}} <br>
                                 <span class="color_span">AUTOR: </span>{{item.user_name}}
                             </v-card>
                             <v-card-actions>
                                 <v-btn
-                                    color="#6cb2eb"
+                                    color="#92C145"
                                     class="mx-4"
                                     outlined
                                     @click="dialog = !dialog, questionResp.id_question= item.id_question"
@@ -26,7 +38,7 @@
                                     Responder
                                 </v-btn>
                                 <v-btn
-                                    color="#6cb2eb"
+                                    color="#92C145"
                                     class="mx-4"
                                     outlined
                                     @click="eliminarQuestion(item)"
@@ -54,7 +66,7 @@
                                         <v-btn
                                         text
                                         color="primary"
-                                        @click="responderQuestion()"
+                                        @click="responderQuestion(), loading= true"
                                         >
                                         Responder
                                         </v-btn>
@@ -64,6 +76,13 @@
                     </v-timeline-item>
                 </v-slide-x-reverse-transition>
             </v-timeline>
+            <v-progress-linear
+                :active="loading"
+                :indeterminate="loading"
+                absolute
+                bottom
+                color="amber darken-3"
+            ></v-progress-linear>
         </template>
         <template v-else>
             <v-card
@@ -72,7 +91,14 @@
             >
                 <v-card-text>
                     <p class="text-h4 text--primary">
-                        No hay publicaciones 
+                        <v-alert
+                            icon="mdi-sleep"
+                            prominent
+                            text
+                            type="info"
+                        >
+                            No hay publicaciones
+                        </v-alert>
                     </p>
                 </v-card-text>
             </v-card>
@@ -96,6 +122,8 @@ export default {
             success: 'mdi-check-circle',
         }
         return {
+            error_id_user: false,
+            loading: false,
             dialog: false,
             isLoading: true,
             there_is_questions: false,
@@ -106,7 +134,7 @@ export default {
                 id_user: '',
             },
             styleObject2: {
-                border: '3px solid #AED6F1'
+                border: '3px solid #92C145'
             }
         }
     },
@@ -149,13 +177,26 @@ export default {
         async responderQuestion(){
             console.log("dentro de responder",this.questionResp)
             try {
-                let response = await axios.post('/api/post/respuesta',this.questionResp)
-                if (response.status === 200) {
-                    // this.questionsAll()
+                let user_log_id = this.$store.getters.currentUser.id
+                if (this.questionResp.id_user === user_log_id) {
                     this.dialog = false
-                    this.$router.push('/')
+                    setTimeout(() => {
+                        console.log("ahora si paso el tiempo")
+                        this.loading = false
+                        this.error_id_user = true
+                    }, 3000)
                 } else {
-                    console.log("algo salio mal al responder la pregunta")
+                    
+                    let response = await axios.post('/api/post/respuesta',this.questionResp)
+                    if (response.status === 200) {
+                        setTimeout(() => {
+                            this.loading = false,
+                            this.dialog = false
+                            //this.$router.push('/')
+                        }, 3000)                        
+                    } else {
+                        console.log("algo salio mal al responder la pregunta")
+                    }
                 }
             } catch (error) {
                 console.log(error)

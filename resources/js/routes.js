@@ -18,16 +18,13 @@ export const routes = [
     },
     {
         path: '/',
-        component: Home,
-        meta: {
-            requireAuth: true
-        }
+        component: Home
     },
     {
         path: '/customers',
         component: CustomersMain,
         meta: {
-            requireAuth: true
+            requiresAuth: true
         },
         children: [
             {
@@ -48,14 +45,14 @@ export const routes = [
         path: '/validar',
         component: Validar,
         meta: {
-            requireAuth: true
+            requiresAuth: true
         }
     },
     {
         path: '/preguntas',
         component: CrearPregunta,
         meta: {
-            requireAuth: true
+            requiresAuth: true
         }
     },
 

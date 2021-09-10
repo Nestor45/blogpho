@@ -84,7 +84,8 @@
                 login(this.form)
                     .then((res)=>{
                         this.$store.commit("loginSuccess",res)
-                        this.$router.push({path: '/validar'})
+                        this.$router.push({path: '/'})
+                        //location.reload();
                     })
                     .catch((error)=>{
                         this.posError = error

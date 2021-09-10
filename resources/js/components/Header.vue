@@ -85,15 +85,11 @@ export default {
     },
     methods: {
         infoUser(){
-            console.log("band", this.band)
-            console.log("bandPre", this.bandPre)
             if( !this.band ) {
                 this.band = true
             }
             var URLactual = window.location;
-            console.log(URLactual.pathname)
             if (URLactual.pathname === '/login') {
-                console.log("detro del url")
                 this.bandPre = false
             } if (URLactual.pathname === '/') {
                 this.bandPre = true
