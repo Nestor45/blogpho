@@ -114,7 +114,6 @@ class CommentController extends Controller
 
         if ($exito) {
             return response()->json([
-                "status" => "ok",
                 "message" => "Comment guardado con exito",
                 "post" => $comment
             ], 200);

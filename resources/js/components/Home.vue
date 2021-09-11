@@ -9,7 +9,7 @@
                     icon="mdi-clock-fast"
                     border="left"
                     >
-                    PARA REALIZAR UNA PREGUNSTA Y UNA MEJOR EXPIENZA PUEDE REGISTRARSE.   
+                    PARA REALIZAR UNA PREGUNSTA Y UNA MEJOR EXPIENZA PUEDE REGISTRARSE.(falata filtrar peguntas por areas (salud, educación, politica, ambiental, tecnología, familiar, social, laboral)
                 </v-alert>
             </template>
             <v-col v-for="(item, i) in questions" :key="i">
@@ -50,8 +50,7 @@
                                         @click="like(item)"
                                         fab
                                         icon
-                                    >   
-                                        <template v-if="item.type_like"></template>
+                                    >
                                         <v-icon >{{item.type_like}}</v-icon>
                                     </v-btn>
                                     <span class="subheading mr-2">{{item.likes}}</span>
@@ -89,7 +88,6 @@ export default {
         return {
             type_heart: '',
             user_name: '',
-            show2: true,
             errorHome: false,
             there_is_questions: false,
             likeEn: {
@@ -128,6 +126,7 @@ export default {
                         .map(function(x) {
                             x.type_like='mdi-heart-outline'
                             x.obj_likes.forEach(element => {
+                                console.log("element",element)
                                 if (element.user_id===userId) {
                                     x.type_like='mdi-heart'
                                 }
@@ -140,50 +139,33 @@ export default {
                 }
             } catch (error) {
                 this.errorHome = true
-                // console.log("questionsContestadas",error)
+                console.log("questionsContestadas",error)
             }
         },
         async like(item){
             try {
-                //Todo: verificamos que el usuario de clik en boton de like
-                if (this.show2) {
                     //Todo: en este caso tememos por defaul a show2 en true
-                    //Entonces pasa
                     let user = this.$store.getters.currentUser
                     this.likeEn.user_log_id = user.id
                     this.likeEn.post_id = item.post_id
-                    this.likeEn.type_like = 1
+                    this.likeEn.type_like = 'mdi-heart'
                     let response = await axios.post('/api/post/like',this.likeEn)
                     //Enviamos las solicitud y no debuelve un 200 ó 250
                     if (response.status===250) {
+                        this.likeEn.type_like = 'mdi-heart-outline'
                         //Si el status es 250 quiere decir que exite un registro(un like)
                         response = await axios.post('/api/post/dislike',this.likeEn)
+                        this.questionsContestadas()
                         //Todo: Entonces debemos hacer un dislike
                         if (response.status === 200) {
-                            //Si el statu del dislike es 200 debemos poner a show2 en true
-                            //Porque sea modificado en el botton a false
-                            this.show2 = false
-                            this.questionsContestadas()
+                            //this.questionsContestadas()
                         } else {
                             console.log("Error")
                         }
                     } else if (response.status===200) {
                         //Todo: en caso de que status se 200 no habia registro
-                        //El show2 pasa hacer false (la considicion esta en el botton 'mirar: show2 = !show2')
                         this.questionsContestadas()
                     }
-                } else {
-                    let user = this.$store.getters.currentUser
-                    this.likeEn.user_log_id = user.id
-                    this.likeEn.post_id = item.post_id
-                    let response = await axios.post('/api/post/dislike',this.likeEn)
-                    if (response.status === 200) {
-                        this.show2=true
-                        this.questionsContestadas()
-                    } else {
-                        console.log("Error")
-                    }
-                }
                 
             } catch (error) {
                 console.log(error)

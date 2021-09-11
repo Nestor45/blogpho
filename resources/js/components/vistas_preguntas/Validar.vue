@@ -33,7 +33,7 @@
                                     color="#92C145"
                                     class="mx-4"
                                     outlined
-                                    @click="dialog = !dialog, questionResp.id_question= item.id_question"
+                                    @click="dialog = !dialog, questionResp.id_question= item.id_question, id_user_question=item.id_user"
                                 >
                                     Responder
                                 </v-btn>
@@ -122,6 +122,7 @@ export default {
             success: 'mdi-check-circle',
         }
         return {
+            id_user_question: '',
             error_id_user: false,
             loading: false,
             dialog: false,
@@ -144,6 +145,7 @@ export default {
     },
     methods: {
         infoUser(){
+            
             let $user = this.$store.getters.currentUser
             this.questionResp.id_user = $user.id 
         },
@@ -175,10 +177,16 @@ export default {
             }
         },
         async responderQuestion(){
+
             console.log("dentro de responder",this.questionResp)
             try {
-                let user_log_id = this.$store.getters.currentUser.id
-                if (this.questionResp.id_user === user_log_id) {
+                let user_ques_id = this.id_user_question
+                console.log(
+                    "quesIdUser:", user_ques_id,
+                    "userLogId:", this.questionResp.id_user
+                )
+                if (this.questionResp.id_user === user_ques_id) {
+                    console.log("0")
                     this.dialog = false
                     setTimeout(() => {
                         console.log("ahora si paso el tiempo")
@@ -186,13 +194,13 @@ export default {
                         this.error_id_user = true
                     }, 3000)
                 } else {
-                    
                     let response = await axios.post('/api/post/respuesta',this.questionResp)
                     if (response.status === 200) {
+                        console.log("1")
                         setTimeout(() => {
                             this.loading = false,
                             this.dialog = false
-                            //this.$router.push('/')
+                            this.$router.push('/')
                         }, 3000)                        
                     } else {
                         console.log("algo salio mal al responder la pregunta")

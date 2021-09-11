@@ -37,6 +37,13 @@
                             </v-list-item-icon>
                             <v-list-item-title >Log Out</v-list-item-title>
                         </v-list-item>
+
+                        <v-list-item>
+                            <v-list-item-icon>
+                                <v-icon>mdi-emoticon-cool</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title >{{this.nameUser}}</v-list-item-title>
+                        </v-list-item>
                         
                     </template>
                     <template v-else>
@@ -55,7 +62,6 @@
                                 </v-list-item-icon>
                                 <v-list-item-title >Home</v-list-item-title>
                             </v-list-item>
-                            
                         </template>
                     </template>
                 </v-list-item-group>
@@ -69,6 +75,7 @@ export default {
     name: 'app-header',
     data() {
         return {
+            nameUser: '',
             drawer: false,
             group: null,
             band: false,
@@ -76,6 +83,7 @@ export default {
         }
     },
     created() {
+        this.nameUser = this.$store.state.currentUser.username
         this.infoUser()
     },
     computed: {
@@ -85,6 +93,7 @@ export default {
     },
     methods: {
         infoUser(){
+            
             if( !this.band ) {
                 this.band = true
             }

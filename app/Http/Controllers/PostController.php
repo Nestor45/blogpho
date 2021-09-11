@@ -30,6 +30,7 @@ class PostController extends Controller
             $objectQuestion->brief = $question->brief;
             $objectQuestion->context = $question->context;
             $objectQuestion->user_name = $user->name;
+            $objectQuestion->id_user = $user->id;
             array_push($array, $objectQuestion);
         }
         if ($array) {
@@ -176,7 +177,7 @@ class PostController extends Controller
                 $obLikes = new \stdClass();
                 $obLikes->user_id = $like->user_id;
                 $obLikes->post_id = $like->post_id;
-                $obLikes->type_like = $like->like;
+                $obLikes->type_like = $like->type_like;
                 array_push($array_likes, $obLikes);
             }
             $likesCount = Like::where("post_id",$post->id)->count();
@@ -221,7 +222,7 @@ class PostController extends Controller
                 $like = new Like;
                 $like->user_id = $request->user_log_id;
                 $like->post_id = $request->post_id;
-                $like->like = 1;
+                $like->type_like = $request->type_like;
                 $like->save();
                 DB::commit();
                 $exito = true;
