@@ -1,84 +1,130 @@
 <template>
     <div class="container">
-        <template v-if="there_is_questions">
-            <template v-if="errorHome">
-                <v-alert
-                    text
-                    dense
-                    color="teal"
-                    icon="mdi-clock-fast"
-                    border="left"
-                    >
-                    PARA REALIZAR UNA PREGUNSTA Y UNA MEJOR EXPIENZA PUEDE REGISTRARSE.(falata filtrar peguntas por areas (salud, educación, politica, ambiental, tecnología, familiar, social, laboral)
-                </v-alert>
-            </template>
-            <v-col v-for="(item, i) in questions" :key="i">
-                    <v-card
-                        class="mx-auto"
-                        color="grey darken-1"
-                        dark
-                        max-width="800"
-                    >
-                        <v-card-title>
-                            <v-icon
-                                large
-                                left
-                            >
-                                mdi-account-tie-voice
-                            </v-icon>
-                            <span class="title font-weight-light">{{item.title}}</span>
-                        </v-card-title>
-                        <v-card-text class="headline font-weight-bold" >
-                            {{item.context}}
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-list-item class="grow">
-                                <v-list-item-avatar color="grey darken-3">
-                                    <v-img
-                                    class="elevation-6"
-                                    src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
-                                    ></v-img>
-                                </v-list-item-avatar>
-                                <v-list-item-content>
-                                    <v-list-item-title>{{item.user_name}}</v-list-item-title>
-                                </v-list-item-content>
-                                <v-row
-                                    align="center"
-                                    justify="end"
-                                > 
-                                    <v-btn
-                                        @click="like(item)"
-                                        fab
-                                        icon
-                                    >
-                                        <v-icon >{{item.type_like}}</v-icon>
-                                    </v-btn>
-                                    <span class="subheading mr-2">{{item.likes}}</span>
-                                </v-row>
-                            </v-list-item>
-                        </v-card-actions>
-                    </v-card>
-            </v-col>
-        </template>
-        <template v-else>
-            <v-card
-                class="mx-auto"
-                max-width="444"
-            >
-                <v-card-text>
-                    <p class="text-h4 text--primary">
-                        <v-alert
-                            icon="mdi-sleep"
-                            prominent
-                            text
-                            type="info"
+        <!-- <v-data-iterator
+            :search="search"
+            hide-default-footer
+        > 
+            <template v-slot:header> -->
+                <v-toolbar
+                    dark
+                    color="grey darken-1"
+                    class="mb-1"
+                >
+                    <v-text-field
+                    v-model="search"
+                    clearable
+                    flat
+                    solo-inverted
+                    hide-details
+                    prepend-inner-icon="mdi-magnify"
+                    label="Buscar Pregunta"
+                    ></v-text-field>
+                    <template v-if="$vuetify.breakpoint.mdAndUp">
+                        <v-spacer></v-spacer>
+                        <v-select
+                            v-model="sortBy"
+                            flat
+                            solo-inverted
+                            hide-details
+                            :items="keys"
+                            prepend-inner-icon="mdi-find-replace"
+                            label="Filtrar por"
+                        ></v-select>
+                        <v-spacer></v-spacer>
+                        <v-btn-toggle v-model="sortDesc" mandatory>
+                            <v-btn large depressed color="grey darken-1" :value="false">
+                                <v-icon>mdi-arrow-up</v-icon>
+                            </v-btn>
+                            <v-btn large depressed color="grey darken-1" :value="true">
+                                <v-icon>mdi-arrow-down</v-icon>
+                            </v-btn>
+                        </v-btn-toggle>
+                    </template>
+                </v-toolbar>
+            <!-- </template> -->
+
+            <template v-if="there_is_questions">
+                <template v-if="errorHome">
+                    <v-alert
+                        text
+                        dense
+                        color="teal"
+                        icon="mdi-clock-fast"
+                        border="left"
                         >
-                            No hay publicaciones
-                        </v-alert>
-                    </p>
-                </v-card-text>
-            </v-card>
-        </template>
+                        PARA REALIZAR UNA PREGUNSTA Y UNA MEJOR EXPIENZA PUEDE REGISTRARSE.(falata filtrar peguntas por areas (salud, educación, politica, ambiental, tecnología, familiar, social, laboral)
+                    </v-alert>
+                </template>
+                <v-col v-for="(item, i) in questions" :key="i">
+                        <v-card
+                            class="mx-auto"
+                            elevation="24"
+                            rounded='xl'
+                            color="grey darken-1"
+                            dark
+                            max-width="800"
+                        >
+                            <v-card-title>
+                                <v-icon
+                                    large
+                                    left
+                                >
+                                    mdi-account-tie-voice
+                                </v-icon>
+                                <span class="title font-weight-light">{{item.title}}</span>
+                            </v-card-title>
+                            <v-card-text class="headline font-weight-bold" >
+                                {{item.context}}
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-list-item class="grow">
+                                    <v-list-item-avatar color="grey darken-3">
+                                        <v-img
+                                        class="elevation-6"
+                                        src="https://avataaars.io/?avatarStyle=Transparent&topType=ShortHairShortCurly&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=White&eyeType=Default&eyebrowType=DefaultNatural&mouthType=Default&skinColor=Light"
+                                        ></v-img>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content>
+                                        <v-list-item-title>{{item.user_name}}</v-list-item-title>
+                                    </v-list-item-content>
+                                    <v-row
+                                        align="center"
+                                        justify="end"
+                                    > 
+                                        <v-btn
+                                            @click="like(item)"
+                                            fab
+                                            icon
+                                        >
+                                            <v-icon >{{item.type_like}}</v-icon>
+                                        </v-btn>
+                                        <span class="subheading mr-2">{{item.likes}}</span>
+                                    </v-row>
+                                </v-list-item>
+                            </v-card-actions>
+                        </v-card>
+                </v-col>
+            </template>
+            <template v-else>
+                <v-card
+                    class="mx-auto"
+                    max-width="444"
+                >
+                    <v-card-text>
+                        <p class="text-h4 text--primary">
+                            <v-alert
+                                icon="mdi-sleep"
+                                prominent
+                                text
+                                type="info"
+                            >
+                                No hay publicaciones
+                            </v-alert>
+                        </p>
+                    </v-card-text>
+                </v-card>
+            </template>
+        <!-- </v-data-iterator> -->
     </div>
 </template>
 <script>
@@ -86,8 +132,9 @@ export default {
     name: 'home',
     data() {
         return {
-            type_heart: '',
-            user_name: '',
+            sortDesc: false,
+            sortBy: '',
+            search: '',
             errorHome: false,
             there_is_questions: false,
             likeEn: {
@@ -96,6 +143,16 @@ export default {
                 type_like : '',
             },
             questions: [],
+            keys: [ 
+                'Salud', 
+                'Educación', 
+                'Politica', 
+                'Ambiental', 
+                'Tecnología', 
+                'Familiar', 
+                'Social', 
+                'Laboral'
+            ],
         }
     },
     created(){
@@ -108,37 +165,18 @@ export default {
                 let response = await axios.get('/api/questions/respuesta')
                 //Ahora this.questions tiene las preguntas y sus respuestas
                 this.questions = response.data.questionsRes
-                //Agregamos a las preguntas el atributo 'type_like' para  mostrar el like o dislike
-                //En este caso si el usuario no tiene sesion se muestra el dislike
-                var newArrayQuest = response.data.questionsRes
-                    .map(function(x) {
-                        x.type_like='mdi-heart-outline'
-                        return x
-                    });
-                //Donde 'x' tiene los objetos y en cada objeto agregamos el nuevo atributo
                 if (this.questions.length === 0) {
                     this.there_is_questions = false
                     console.log("no hay preguntas")
                 } else {
+                    if (this.$store.getters.currentUser===null) {
+                        this.errorHome = true
+                    }
                     this.there_is_questions = true
-                    let userId = this.$store.getters.currentUser.id
-                    var newArrayQuest = response.data.questionsRes
-                        .map(function(x) {
-                            x.type_like='mdi-heart-outline'
-                            x.obj_likes.forEach(element => {
-                                console.log("element",element)
-                                if (element.user_id===userId) {
-                                    x.type_like='mdi-heart'
-                                }
-                            });
-                            return x
-                        });
-                        
-                    this.questions = newArrayQuest
                     this.$store.commit('setQuestionsRes', this.questions)
                 }
             } catch (error) {
-                this.errorHome = true
+                
                 console.log("questionsContestadas",error)
             }
         },
@@ -155,10 +193,9 @@ export default {
                         this.likeEn.type_like = 'mdi-heart-outline'
                         //Si el status es 250 quiere decir que exite un registro(un like)
                         response = await axios.post('/api/post/dislike',this.likeEn)
-                        this.questionsContestadas()
                         //Todo: Entonces debemos hacer un dislike
                         if (response.status === 200) {
-                            //this.questionsContestadas()
+                            this.questionsContestadas()
                         } else {
                             console.log("Error")
                         }

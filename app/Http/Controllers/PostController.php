@@ -172,26 +172,28 @@ class PostController extends Controller
         foreach($comments as $comment) {
             $array_likes = array();
             $post = $comment->post;
-            $likes = Like::where("post_id",$post->id)->get();
-            foreach ($likes as $like){
-                $obLikes = new \stdClass();
-                $obLikes->user_id = $like->user_id;
-                $obLikes->post_id = $like->post_id;
-                $obLikes->type_like = $like->type_like;
-                array_push($array_likes, $obLikes);
-            }
+            
             $likesCount = Like::where("post_id",$post->id)->count();
             $user = User::whereId($post->user_id)->first();
+
+            $like = $post->likes->first();
             $objectQuestion = new \stdClass();
+            if ($like) {
+                $objectQuestion->type_like = "mdi-heart";
+            } else {
+                $objectQuestion->type_like = "mdi-heart-outline";
+            }
+            
             $objectQuestion->id_question = $comment->id;
             $objectQuestion->title = $post->title;
             $objectQuestion->context = $comment->comment;
             $objectQuestion->user_name = $user->name;
             $objectQuestion->user_id = $user->id;
-            
             $objectQuestion->post_id = $post->id;
+
             $objectQuestion->likes = $likesCount;
-            $objectQuestion->obj_likes = $array_likes;
+
+            
             array_push($array, $objectQuestion);
         }
         if ($array) {

@@ -42,7 +42,7 @@
                             <v-list-item-icon>
                                 <v-icon>mdi-emoticon-cool</v-icon>
                             </v-list-item-icon>
-                            <v-list-item-title >{{this.nameUser}}</v-list-item-title>
+                            <v-list-item-title >{{this.$store.state.currentUser.username}}</v-list-item-title>
                         </v-list-item>
                         
                     </template>
@@ -60,7 +60,7 @@
                                 <v-list-item-icon>
                                     <v-icon>mdi-home</v-icon>
                                 </v-list-item-icon>
-                                <v-list-item-title >Home</v-list-item-title>
+                                <v-list-item-title>Home</v-list-item-title>
                             </v-list-item>
                         </template>
                     </template>
@@ -75,28 +75,24 @@ export default {
     name: 'app-header',
     data() {
         return {
-            nameUser: '',
+            user_name: '',
             drawer: false,
             group: null,
-            band: false,
+            band: true,
             bandPre: false,
         }
-    },
-    created() {
-        this.nameUser = this.$store.state.currentUser.username
-        this.infoUser()
     },
     computed: {
         currentUser() {
             return this.$store.getters.currentUser
         }
     },
+    created() {
+        this.infoUser()
+        
+    },
     methods: {
         infoUser(){
-            
-            if( !this.band ) {
-                this.band = true
-            }
             var URLactual = window.location;
             if (URLactual.pathname === '/login') {
                 this.bandPre = false
@@ -114,7 +110,7 @@ export default {
             this.$router.push('/login')
         },
         logout() {
-            this.band = false
+            this.bandPre = false
             console.log("click logout", this.band)
             this.$store.commit('logout')
             this.$router.push('/login')
