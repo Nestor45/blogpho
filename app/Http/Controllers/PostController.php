@@ -39,7 +39,8 @@ class PostController extends Controller
             ], 200);
         } else {
             return response()->json([
-                "error" => "No hay nada en la BD"
+                "status" => "error",
+                "message" => "No hay nada en la BD"
             ], 250);
         }
     }
@@ -179,6 +180,7 @@ class PostController extends Controller
             $like = $post->likes->first();
             $objectQuestion = new \stdClass();
             if ($like) {
+                $objectQuestion->id_user_piv = $like->pivot->user_id;
                 $objectQuestion->type_like = "mdi-heart";
             } else {
                 $objectQuestion->type_like = "mdi-heart-outline";
@@ -202,7 +204,8 @@ class PostController extends Controller
             ], 200);
         } else {
             return response()->json([
-                "error" => "No hay nada en la BD"
+                "status" => "error",
+                "message" => "No hay nada en la BD"
             ], 250);
         }
     }

@@ -153,7 +153,7 @@ export default {
             try {
                 let response = await axios.get('/api/questions')
                 this.questions = response.data.questions
-                if (response.data.error === "No hay nada en la BD") {
+                if (response.data.message === "No hay nada en la BD") {
                     this.there_is_questions = false
                 } else {
                     this.there_is_questions = true
