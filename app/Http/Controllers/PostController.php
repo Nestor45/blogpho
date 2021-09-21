@@ -177,15 +177,8 @@ class PostController extends Controller
             $likesCount = Like::where("post_id",$post->id)->count();
             $user = User::whereId($post->user_id)->first();
 
-            $like = $post->likes->first();
             $objectQuestion = new \stdClass();
-            if ($like) {
-                $objectQuestion->id_user_piv = $like->pivot->user_id;
-                $objectQuestion->type_like = "mdi-heart";
-            } else {
-                $objectQuestion->type_like = "mdi-heart-outline";
-            }
-            
+            $objectQuestion->type_like = "mdi-heart-outline";
             $objectQuestion->id_question = $comment->id;
             $objectQuestion->title = $post->title;
             $objectQuestion->context = $comment->comment;
@@ -270,6 +263,52 @@ class PostController extends Controller
             return response()->json([
                 "exito" => "dislike"
             ], 200);
+        }
+    }
+
+
+    public function userIndexHome(Request $request){ 
+
+        $comments = Comment::all();
+        $array = array();
+        foreach ($comments as $comment) {
+            $objectQuestion = new \stdClass();
+            $array_likes = array();
+            $post = $comment->post;
+            $likesCount = Like::where("post_id",$post->id)->count();
+            $user = User::whereId($post->user_id)->first();
+            
+            $likes = $post->likes->all();
+
+            foreach ($likes as $like) {
+                // return response()->json([
+                //     "questionsRes" => $request->user_id_login
+                // ], 200);
+                if ($like->pivot->user_id == $request->user_id_login) {
+                    $objectQuestion->id_user_piv = $like->pivot->user_id;
+                    $objectQuestion->type_like = "mdi-heart";
+                }
+            }
+            $objectQuestion->id_question = $comment->id;
+            $objectQuestion->title = $post->title;
+            $objectQuestion->context = $comment->comment;
+            $objectQuestion->user_name = $user->name;
+            $objectQuestion->user_id = $user->id;
+            $objectQuestion->post_id = $post->id;
+
+            $objectQuestion->likes = $likesCount;
+            
+            array_push($array, $objectQuestion);
+        }
+        if ($array) {
+            return response()->json([
+                "questionsRes" => $array
+            ], 200);
+        } else {
+            return response()->json([
+                "status" => "error",
+                "message" => "No hay nada en la BD"
+            ], 250);
         }
     }
 }

@@ -54,7 +54,10 @@
                                         fab
                                         icon
                                     >
-                                        <v-icon >{{item.type_like}}</v-icon>
+                                        <template v-if="item.id_user_piv"><v-icon >{{item.type_like}}</v-icon></template>
+                                        
+                                        <template v-else ><v-icon >mdi-heart-outline</v-icon></template>
+                                        
                                     </v-btn>
                                     <span class="subheading mr-2">{{item.likes}}</span>
                                 </v-row>
@@ -93,6 +96,10 @@ export default {
             sortDesc: false,
             errorHome: false,
             there_is_questions: false,
+            objUser:{
+                user_id_login: '',
+            },
+            
             likeEn: {
                 user_log_id: '',
                 post_id: 0,
@@ -123,27 +130,41 @@ export default {
     computed: {
         filteredKeys () {
             return this.questions.filter(title => title !== 'title')
+        },
+        currentUser() {
+            return this.$store.getters.currentUser
         }
     },
     methods: {
         async questionsContestadas(){
             try {
                 //Obtenemos las preguntas con sus respuestas
-                let response = await axios.get('/api/questions/respuesta')
-                //Ahora this.questions tiene las preguntas y sus respuestas
-                this.questions = response.data.questionsRes
-                
-                if (response.data.message === "No hay nada en la BD") {
-                    this.there_is_questions = false
-                    console.log("no hay preguntas")
-                } else {
-                    if (this.$store.getters.currentUser===null) {
-                        this.errorHome = true
+                if (this.$store.getters.currentUser===null) {
+                    this.errorHome = true
+                    let response = await axios.get('/api/questions/respuesta')
+                    //Ahora this.questions tiene las preguntas y sus respuestas
+                    console.log("1",this.questions)
+                    if (response.data.message === "No hay nada en la BD") {
+                        this.there_is_questions = false
+                        console.log("no hay preguntas")
+                    } else {
+                        this.there_is_questions = true
+                        this.questions = response.data.questionsRes
+                        this.$store.commit('setQuestionsRes', this.questions)
                     }
-                    console.log(this.$store.getters.currentUser.id)
+                } else {
+                    this.objUser.user_id_login = this.$store.getters.currentUser.id
+                    let response = await axios.post('/api/post/userIndex',this.objUser)
+                    
                     this.there_is_questions = true
+                    this.questions = response.data.questionsRes
+                    console.log(
+                        "2",this.questions,
+                        "id_use", this.$store.getters.currentUser.id
+                    )
                     this.$store.commit('setQuestionsRes', this.questions)
                 }
+                
             } catch (error) {
                 console.log("questionsContestadas",error)
             }
