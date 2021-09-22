@@ -281,9 +281,7 @@ class PostController extends Controller
             $likes = $post->likes->all();
 
             foreach ($likes as $like) {
-                // return response()->json([
-                //     "questionsRes" => $request->user_id_login
-                // ], 200);
+                
                 if ($like->pivot->user_id == $request->user_id_login) {
                     $objectQuestion->id_user_piv = $like->pivot->user_id;
                     $objectQuestion->type_like = "mdi-heart";

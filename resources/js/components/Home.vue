@@ -153,18 +153,18 @@ export default {
                         this.$store.commit('setQuestionsRes', this.questions)
                     }
                 } else {
+                    console.time()
                     this.objUser.user_id_login = this.$store.getters.currentUser.id
                     let response = await axios.post('/api/post/userIndex',this.objUser)
-                    
-                    this.there_is_questions = true
-                    this.questions = response.data.questionsRes
-                    console.log(
-                        "2",this.questions,
-                        "id_use", this.$store.getters.currentUser.id
-                    )
-                    this.$store.commit('setQuestionsRes', this.questions)
+                    if (response.status === 200) {
+                        this.there_is_questions = true
+                        this.questions = response.data.questionsRes
+                        this.$store.commit('setQuestionsRes', this.questions)
+                    } else {
+                        console.log("algo salio mal")
+                    }
+                    console.timeEnd()
                 }
-                
             } catch (error) {
                 console.log("questionsContestadas",error)
             }
