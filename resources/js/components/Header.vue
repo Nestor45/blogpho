@@ -25,12 +25,12 @@
                             </v-list-item-icon>
                             <v-list-item-title >Validar</v-list-item-title>
                         </v-list-item>
-                        <v-list-item @click="customer">
+                        <!-- <v-list-item @click="customer">
                             <v-list-item-icon>
                                 <v-icon>mdi-account-multiple</v-icon>
                             </v-list-item-icon>
                             <v-list-item-title >Customer</v-list-item-title>
-                        </v-list-item>
+                        </v-list-item> -->
                         <v-list-item @click="logout">
                             <v-list-item-icon>
                                 <v-icon>mdi-account-convert</v-icon>
