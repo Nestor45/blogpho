@@ -68,4 +68,6 @@ Instalar los programas
 Descargar Composer
 Instalar y colocar la ruta del php 
 Actualizar los paquetes para composer 'composer update'
+php artisan jwt:secret
+php artisan key:generate
 Crear tu base datos y hacer las migraciones
